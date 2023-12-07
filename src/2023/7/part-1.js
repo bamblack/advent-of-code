@@ -33,6 +33,7 @@ async function execute() {
         const cardRanks = cards.map(c => cardMap[c]);
         const bid = parseInt(bidString);
 
+        // group cards
         const cardGroups = cards.reduce((acc, curr) => {
             if (acc[curr] != undefined) {
                 acc[curr].push(curr);
@@ -43,6 +44,7 @@ async function execute() {
             return acc;
         }, {});
 
+        // determine what type of hand this is based by the numbers of cards in each group
         const cardGroupVals = Object.values(cardGroups);
         let type = 0;
         if (cardGroupVals.some(a => a.length === 5)) {
@@ -66,8 +68,11 @@ async function execute() {
         
         const hand = { id: handId++, bid, cards: cardRanks, type };
         hands.push(hand);
+        // group the hands by their type
         if (handsByType[type] !== undefined) {
             handsByType[type].push(hand);
+            // sort each hand type group such that hands of the same type but higher card value
+            // are sorted higher
             handsByType[type].sort((a, b) => {
                 let sortIndex;
                 if (a.cards[0] !== b.cards[0]) {
@@ -91,7 +96,9 @@ async function execute() {
 
     let rank = hands.length;
     let winnings = 0;
+    // go through handsByType, starting from the highest type present
     for (let key of Object.keys(handsByType).map(n => parseInt(n)).sort().reverse()) {
+        // handsByType[key] is already sorted such that hands with a higher card value are first
         for (let hand of handsByType[key.toString()]) {
             hand.rank = rank--;
             hand.winnings = hand.rank * hand.bid;
