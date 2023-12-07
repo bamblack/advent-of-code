@@ -45,7 +45,6 @@ async function execute() {
 
         
         let type = 0;
-        console.log(cards);
         if (cards.some(c => c === 'J')) {
             const wildCards = cards.filter(c => c === 'J');
             if (wildCards.length !== 5) {
@@ -69,49 +68,27 @@ async function execute() {
                 const actAs = sortedNormalCardGroups[0][0];
                 cardGroups[actAs].push(...wildCards);
                 delete cardGroups['J']
-                const cardGroupVals = Object.values(cardGroups);
+            }
+        }
 
-                if (cardGroupVals.some(a => a.length === 5)) {
-                    type = 7; // 5 of a kind
-                } else if (cardGroupVals.some(a => a.length === 4)) {
-                    type = 6; // 4 of a kind
-                } else if (cardGroupVals.some(a => a.length === 3) && cardGroupVals.some(a => a.length === 2)) {
-                    type = 5; // full house
-                } else if (cardGroupVals.some(a => a.length === 3) && !cardGroupVals.some(a => a.length === 2)) {
-                    type = 4; // three of a kind
-                } else if (cardGroupVals.some(a => a.length === 2)) {
-                    // diff between 2 pair and 1 pair
-                    if (cardGroupVals.filter(a => a.length === 2).length === 2) {
-                        type = 3; // two pair
-                    } else {
-                        type = 2; // one pair
-                    }
-                } else {
-                    type = 1; // high card
-                }
+        const cardGroupVals = Object.values(cardGroups);
+        if (cardGroupVals.some(a => a.length === 5)) {
+            type = 7; // 5 of a kind
+        } else if (cardGroupVals.some(a => a.length === 4)) {
+            type = 6; // 4 of a kind
+        } else if (cardGroupVals.some(a => a.length === 3) && cardGroupVals.some(a => a.length === 2)) {
+            type = 5; // full house
+        } else if (cardGroupVals.some(a => a.length === 3) && !cardGroupVals.some(a => a.length === 2)) {
+            type = 4; // three of a kind
+        } else if (cardGroupVals.some(a => a.length === 2)) {
+            // diff between 2 pair and 1 pair
+            if (cardGroupVals.filter(a => a.length === 2).length === 2) {
+                type = 3; // two pair
             } else {
-                type = 7;
+                type = 2; // one pair
             }
         } else {
-            const cardGroupVals = Object.values(cardGroups);
-            if (cardGroupVals.some(a => a.length === 5)) {
-                type = 7; // 5 of a kind
-            } else if (cardGroupVals.some(a => a.length === 4)) {
-                type = 6; // 4 of a kind
-            } else if (cardGroupVals.some(a => a.length === 3) && cardGroupVals.some(a => a.length === 2)) {
-                type = 5; // full house
-            } else if (cardGroupVals.some(a => a.length === 3) && !cardGroupVals.some(a => a.length === 2)) {
-                type = 4; // three of a kind
-            } else if (cardGroupVals.some(a => a.length === 2)) {
-                // diff between 2 pair and 1 pair
-                if (cardGroupVals.filter(a => a.length === 2).length === 2) {
-                    type = 3; // two pair
-                } else {
-                    type = 2; // one pair
-                }
-            } else {
-                type = 1; // high card
-            }
+            type = 1; // high card
         }
         
         const hand = { id: handId++, bid, cards: cardRanks, type };
