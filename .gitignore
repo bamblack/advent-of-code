@@ -1,1 +1,2 @@
 src/**/input.txt
+node_modules/**/*
